@@ -13,4 +13,8 @@ class Application extends Controller {
     Ok("Version 1.2")
   }
 
+  def health = Action {
+    Ok("I'm doing just fine!")
+  }
+
 }
