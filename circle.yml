@@ -1,5 +1,7 @@
 machine:
   timezone: UTC
+  services:
+    - docker
   java:
     version: oraclejdk8
 
