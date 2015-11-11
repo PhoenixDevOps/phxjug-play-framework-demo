@@ -8,11 +8,17 @@ machine:
     version: 2.7.10
 
 dependencies:
+cache_directories:
   pre:
     - sudo apt-get update && sudo apt-get install jq
-  # Run this bash command instead of CircleCI's inferred commands
+  # Run these bash commands instead of CircleCI's inferred commands
   override:
     - sbt test:compile
+    # Cache the intermediate Docker images
+    # See https://circleci.com/docs/docker#caching-docker-layers
+    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
+    - docker build --tag phxdevops/phxjug-play-framework-demo .
+    - mkdir -p ~/docker; docker save phxdevops/phxjug-play-framework-demo > ~/docker/image.tar
   # Cache the resolution-cache and build streams to speed things up
   cache_directories:
     - "~/.sbt"
@@ -20,6 +26,7 @@ dependencies:
     - "target/streams"
     - "project/target/resolution-cache"
     - "project/target/streams"
+    - "~/docker"
 
 test:
   # Run this bash command instead of CircleCI's inferred commands
