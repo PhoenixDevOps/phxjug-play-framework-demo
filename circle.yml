@@ -4,31 +4,42 @@ machine:
     - docker
   java:
     version: oraclejdk8
+  python:
+    version: 2.7.10
 
-dependencies:
-  # Run this bash command instead of CircleCI's inferred commands
-  override:
-    - sbt test:compile
-  # Cache the resolution-cache and build streams to speed things up
-  cache_directories:
-    - "~/.sbt"
-    - "target/resolution-cache"
-    - "target/streams"
-    - "project/target/resolution-cache"
-    - "project/target/streams"
+#dependencies:
+#  # Run this bash command instead of CircleCI's inferred commands
+#  override:
+#    - sbt test:compile
+#  # Cache the resolution-cache and build streams to speed things up
+#  cache_directories:
+#    - "~/.sbt"
+#    - "target/resolution-cache"
+#    - "target/streams"
+#    - "project/target/resolution-cache"
+#    - "project/target/streams"
+#
+#test:
+#  # Run this bash command instead of CircleCI's inferred commands
+#  override:
+#    - sbt test
+#  # Run these commands after the "override" commands
+#  post:
+#    # Copy test reports to Circle test reports dir
+#    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+#    - find . -type f -regex ".*/target/test-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+#    # Build and push the Docker image
+#    - git config --global user.email "josh@PhoenixDevOps.com"
+#    - git config --global user.name "CircleCI"
+#    - docker login --email ${DOCKERHUB_EMAIL} --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
+#    - docker build --tag phxdevops/phxjug-play-framework-demo:${CIRCLE_SHA1} .
+#    - docker push phxdevops/phxjug-play-framework-demo:${CIRCLE_SHA1}
 
-test:
-  # Run this bash command instead of CircleCI's inferred commands
-  override:
-    - sbt test
-  # Run these commands after the "override" commands
-  post:
-    # Copy test reports to Circle test reports dir
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-    - find . -type f -regex ".*/target/test-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-    # Build and push the Docker image
-    - git config --global user.email "josh@PhoenixDevOps.com"
-    - git config --global user.name "CircleCI"
-    - docker login --email ${DOCKERHUB_EMAIL} --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
-    - docker build --tag phxdevops/phxjug-play-framework-demo:${CIRCLE_SHA1} .
-    - docker push phxdevops/phxjug-play-framework-demo:${CIRCLE_SHA1}
+deployment:
+  production:
+    branch: master
+    commands:
+      - curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+      - unzip awscli-bundle.zip
+      - sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+      - aws s3 ls
