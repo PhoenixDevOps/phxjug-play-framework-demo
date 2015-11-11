@@ -10,7 +10,7 @@ class Application extends Controller {
   }
 
   def version = Action {
-    Ok("Version 1.3")
+    Ok("Version 1.4")
   }
 
   def health = Action {
