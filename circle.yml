@@ -8,6 +8,8 @@ machine:
     version: 2.7.10
 
 dependencies:
+  pre:
+    - sudo apt-get update && sudo apt-get install jq
   # Run this bash command instead of CircleCI's inferred commands
   override:
     - sbt test:compile
@@ -42,4 +44,4 @@ deployment:
       - curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
       - unzip awscli-bundle.zip
       - sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-      - aws s3 ls
+      - ECS_TASK_REVISION_NUMBER=$(aws ecs register-task-definition --family demo-service --cli-input-json '{"containerDefinitions":[{"name":"phxjug-play-framework-demo","image":"phxdevops/phxjug-play-framework-demo:${CIRCLE_SHA1}","cpu":512,"memory":10,"essential":true,"portMappings":[{"containerPort":9001,"hostPort":9001}]}],"family":"demo-service"}' | jq '.taskDefinition.revision') && aws ecs update-service --service demo-service --task-definition ${ECS_TASK_REVISION_NUMBER}
