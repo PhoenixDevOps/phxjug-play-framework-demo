@@ -28,7 +28,6 @@ test:
     - git config --global user.email "josh@PhoenixDevOps.com"
     - git config --global user.name "CircleCI"
     - docker login --email ${DOCKERHUB_EMAIL} --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
-    - export BUILD_TAG = $(VERSION).$(CIRCLE_BUILD_NUM)
-    - git tag --annotate --message "Version $(BUILD_TAG)" $(BUILD_TAG)
+    - git tag --annotate --message "Version ${CIRCLE_SHA1}" ${CIRCLE_SHA1}
     - git push --tags
-    - docker push phxdevops/phxjug-play-framework-demo:$(BUILD_TAG)
+    - docker push phxdevops/phxjug-play-framework-demo:${CIRCLE_SHA1}
