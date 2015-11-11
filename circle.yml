@@ -8,7 +8,6 @@ machine:
     version: 2.7.10
 
 dependencies:
-cache_directories:
   pre:
     - sudo apt-get update && sudo apt-get install jq
   # Run these bash commands instead of CircleCI's inferred commands
