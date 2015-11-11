@@ -14,7 +14,7 @@ class IntegrationSpec extends Specification {
 
   "Application" should {
 
-    "work from within a browser" in new WithBrowser {
+    "work from within a WEB browser" in new WithBrowser {
 
       browser.goTo("http://localhost:" + port)
 
